@@ -24,7 +24,7 @@ class Player
     @xo = xo
     @victory= false
   end
-   
+
 end
 
 
@@ -87,7 +87,7 @@ class Game < Player
     player2 = 2
     print 'Enter Player 2 name: '
     name2 = gets.chomp
-    
+
     @p1 = Player.new(name1, 1, xo1)
     @p2 = Player.new(name2, 2, xo2) 
     puts "#{@p1.name} you are #{@p1.xo}"
@@ -100,7 +100,7 @@ class Game < Player
       break if @p1.victory == true || @p2.victory == true
       self.p2turn
     end
-      
+
   end    
 
 =begin 
@@ -118,33 +118,25 @@ class Game < Player
 =end 
 
   def win?(p)
-#diagonal conditions
+    #diagonal conditions
     if @row1[0] == @row2[2] && @row1[0] == @row3[4] && @row1[0] ==p.xo
       p.victory = true
-      p 1
     elsif @row3[0] == @row2[2] && @row3[0] == @row1[4] && @row3[0] ==p.xo
       p.victory = true
-      p 2
-#row conditions
+      #row conditions
     elsif @row1[0] == @row1[2] && @row1[0] == @row1[4] &&@row1[0] ==p.xo
       p.victory = true
-      p 3
     elsif @row2[0] == @row2[2] && @row2[0] == @row2[4] &&@row2[0] ==p.xo
       p.victory = true
-      p 4
     elsif @row3[0] == @row3[2] && @row3[0] == @row3[4] &&@row3[0] ==p.xo
       p.victory = true
-      p 5
-#column conditions
+      #column conditions
     elsif @row1[0] == @row2[0] && @row1[0] == @row3[0] &&@row1[0] ==p.xo
       p.victory = true
-      p 6
     elsif @row1[2] == @row2[2] && @row1[2] == @row3[2] &&@row1[2] ==p.xo
       p.victory = true
-      p 7
     elsif @row1[4] == @row2[4] && @row1[4] == @row3[4] &&@row1[4] ==p.xo
       p.victory = true
-      p 8
     end
     if p.victory == true
       puts "#{p.name} wins"
@@ -167,17 +159,18 @@ class Game < Player
     print 'which column?'
     col = gets.chomp.to_i
     if row == 1 && @row1[find_col(col)] == ' ' 
- #   self.row1 = 'X'
-    @row1[find_col(col)] = 'X'
+      #   self.row1 = 'X'
+      @row1[find_col(col)] = 'X'
     elsif row == 2 && @row2[find_col(col)] == ' ' 
-    @row2[find_col(col)] = 'X'
+      @row2[find_col(col)] = 'X'
     elsif row == 3 && @row3[find_col(col)] == ' ' 
-    @row3[find_col(col)] = 'X'
+      @row3[find_col(col)] = 'X'
 
     else
-      'you\'ve entered the wrong info and have lost your turn'
+      puts 'you can\'t do that, try again'
+      self.p1turn
     end
-    
+
     self.win?(@p1)
     self.win?(@p2)
     self.play
@@ -196,7 +189,8 @@ class Game < Player
     elsif row == 3 && @row3[find_col(col)] == ' ' 
       @row3[find_col(col)] = 'O'
     else
-      'you\'ve entered the wrong info and have lost your turn'
+      puts 'you can\'t do that, try again'
+      self.p2turn
     end
     self.win?(@p1)
     self.win?(@p2)
