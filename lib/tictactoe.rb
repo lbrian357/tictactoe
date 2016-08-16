@@ -1,8 +1,6 @@
 module TttGame
-
   @@line = []
   5.times {@@line.push('-')} 
-
   def find_col(n)
     if n == 1
       0
@@ -24,14 +22,13 @@ class Player
     @xo = xo
     @victory= false
   end
-
 end
 
 
 
 class Game < Player
   include TttGame
-  attr_accessor :row1, :row2, :row3
+  attr_accessor :row1, :row2, :row3, :p1, :p2
   def initialize
     @row1 = [' ','|',' ','|',' ']
 
@@ -40,56 +37,20 @@ class Game < Player
     @row3 = [' ','|',' ','|',' ']
 
     @line =@@line 
-  end
-=begin
-  def row1
-    @row1
+
+    @p1 = Player.new(name1 = nil, 1, 'X')
+    @p2 = Player.new(name2 = nil, 2, 'O')
   end
 
-  def row1=(c)
-    @row1[find_col(c)] = c 
-  end
-
-  def row2
-    @row2
-  end
-
-  def row2=(c)
-    @row2[find_col(c)] = c 
-  end
-
-  def row3
-    @row3
-  end
-
-  def row3=(c)
-    @row3[find_col(c)] = c  
-  end
-=end
   def start
+    #gather player info
     print 'Enter Player 1 name: '
     name1 = gets.chomp
-    xo1 = 'X'
-    xo2 = 'O'
-=begin
-    print 'Are you X or O? '
-    xo1 = gets.chomp
-    if xo1 == 'X' 
-      xo2 == 'O'
-    elsif xo1 == 'O' 
-      xo2 == 'X'
-    else
-      puts 'please enter X or O only'
-      retry
-    end
-=end
-    player1 = 1
-    player2 = 2
     print 'Enter Player 2 name: '
     name2 = gets.chomp
 
-    @p1 = Player.new(name1, 1, xo1)
-    @p2 = Player.new(name2, 2, xo2) 
+    @p1.name = name1
+    @p2.name = name2 
     puts "#{@p1.name} you are #{@p1.xo}"
     puts "#{@p2.name} you are #{@p2.xo}"
 
@@ -100,42 +61,28 @@ class Game < Player
       break if @p1.victory == true || @p2.victory == true
       self.p2turn
     end
-
   end    
 
-=begin 
-  def win_condition
-    if @p1condition == true
-      puts 'Player 1 has won'
-      return true
-    elsif @p2condition == true
-      puts 'Player 2 has won'
-      return true
-    else
-      return false
-    end
-  end
-=end 
 
   def win?(p)
     #diagonal conditions
-    if @row1[0] == @row2[2] && @row1[0] == @row3[4] && @row1[0] ==p.xo
+    if @row1[0] == @row2[2] && @row1[0] == @row3[4] && @row1[0] == p.xo
       p.victory = true
-    elsif @row3[0] == @row2[2] && @row3[0] == @row1[4] && @row3[0] ==p.xo
+    elsif @row3[0] == @row2[2] && @row3[0] == @row1[4] && @row3[0] == p.xo
       p.victory = true
       #row conditions
-    elsif @row1[0] == @row1[2] && @row1[0] == @row1[4] &&@row1[0] ==p.xo
+    elsif @row1[0] == @row1[2] && @row1[0] == @row1[4] &&@row1[0] == p.xo
       p.victory = true
-    elsif @row2[0] == @row2[2] && @row2[0] == @row2[4] &&@row2[0] ==p.xo
+    elsif @row2[0] == @row2[2] && @row2[0] == @row2[4] &&@row2[0] == p.xo
       p.victory = true
-    elsif @row3[0] == @row3[2] && @row3[0] == @row3[4] &&@row3[0] ==p.xo
+    elsif @row3[0] == @row3[2] && @row3[0] == @row3[4] &&@row3[0] == p.xo
       p.victory = true
       #column conditions
-    elsif @row1[0] == @row2[0] && @row1[0] == @row3[0] &&@row1[0] ==p.xo
+    elsif @row1[0] == @row2[0] && @row1[0] == @row3[0] &&@row1[0] == p.xo
       p.victory = true
-    elsif @row1[2] == @row2[2] && @row1[2] == @row3[2] &&@row1[2] ==p.xo
+    elsif @row1[2] == @row2[2] && @row1[2] == @row3[2] &&@row1[2] == p.xo
       p.victory = true
-    elsif @row1[4] == @row2[4] && @row1[4] == @row3[4] &&@row1[4] ==p.xo
+    elsif @row1[4] == @row2[4] && @row1[4] == @row3[4] &&@row1[4] == p.xo
       p.victory = true
     end
     if p.victory == true
@@ -152,42 +99,49 @@ class Game < Player
 
   end
 
-  def p1turn
+  def place_xo(p, row, col)
+    if row >= 1 && row <= 3 && col >= 1 && col <= 3
+      if row == 1 && @row1[find_col(col)] == ' ' 
+        @row1[find_col(col)] = p.xo 
+        true
+      elsif row == 2 && @row2[find_col(col)] == ' ' 
+        @row2[find_col(col)] = p.xo
+        true
+      elsif row == 3 && @row3[find_col(col)] == ' ' 
+        @row3[find_col(col)] = p.xo
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+
+  def p1turn(p = @p1)
     puts "#{@p1.name}:" 
     print 'which row?'
     row = gets.chomp.to_i
     print 'which column?'
     col = gets.chomp.to_i
-    if row == 1 && @row1[find_col(col)] == ' ' 
-      #   self.row1 = 'X'
-      @row1[find_col(col)] = 'X'
-    elsif row == 2 && @row2[find_col(col)] == ' ' 
-      @row2[find_col(col)] = 'X'
-    elsif row == 3 && @row3[find_col(col)] == ' ' 
-      @row3[find_col(col)] = 'X'
-
+    if place_xo(p, row, col)
     else
       puts 'you can\'t do that, try again'
       self.p1turn
     end
-
     self.win?(@p1)
     self.win?(@p2)
     self.play
   end
 
-  def p2turn
+
+  def p2turn(p = @p2)
     puts "#{@p2.name}:" 
     print 'which row?'
     row = gets.chomp.to_i
     print 'which column?'
     col = gets.chomp.to_i
-    if row == 1 && @row1[find_col(col)] == ' ' 
-      @row1[find_col(col)] = 'O'
-    elsif row == 2 && @row2[find_col(col)] == ' ' 
-      @row2[find_col(col)] = 'O'
-    elsif row == 3 && @row3[find_col(col)] == ' ' 
-      @row3[find_col(col)] = 'O'
+    if place_xo(p, row, col)
     else
       puts 'you can\'t do that, try again'
       self.p2turn
@@ -199,5 +153,6 @@ class Game < Player
 
 end
 
-
+a = Game.new
+#a.start
 
